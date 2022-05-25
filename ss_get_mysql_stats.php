@@ -1292,14 +1292,15 @@ function run_query($sql, $conn) {
       }
    }
    $array = array();
-   $count = @mysqli_num_rows($result);
-   if ( $count > 10000 ) {
-      debug('Abnormal number of rows returned: ' . $count);
-   }
-   else {
-      while ( $row = @mysqli_fetch_array($result) ) {
-         $array[] = $row;
-      }
+   $i = 0;
+     while ( $result && $row = @mysqli_fetch_array($result) ) {
+        $array[] = $row;
+    $i++;
+    if($i > 10000){
+     debug('Abnormal number of rows returned (more than 10000)');
+     $array = array();
+     break;
+    }
    }
    debug(array($sql, $array));
    return $array;
